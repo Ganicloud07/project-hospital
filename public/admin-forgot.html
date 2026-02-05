@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Forgot Password | Gani Hospital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-bg">
+
+<div class="admin-login-card">
+  <h2>Forgot Password</h2>
+  <p>Admin Password Reset</p>
+
+  <!-- STEP 1: EMAIL -->
+  <div id="step-email">
+    <input id="email" placeholder="Enter registered email">
+    <button onclick="sendOTP()">Send OTP</button>
+  </div>
+
+  <!-- STEP 2: OTP -->
+  <div id="step-otp" style="display:none;">
+    <input id="otp" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify OTP</button>
+  </div>
+
+  <!-- STEP 3: NEW PASSWORD -->
+  <div id="step-password" style="display:none;">
+    <input id="newpass" type="password" placeholder="New Password">
+    <input id="confirmpass" type="password" placeholder="Confirm Password">
+    <button onclick="resetPassword()">Reset Password</button>
+  </div>
+
+  <p style="margin-top:15px;">
+    <a href="admin-login.html">Back to Login</a>
+  </p>
+</div>
+
+<script>
+let savedEmail = "";
+let savedOTP = "";
+
+function sendOTP() {
+  const email = document.getElementById("email").value;
+  if (!email) return alert("Enter email");
+
+  fetch("/api/admin/forgot-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      savedEmail = email;
+      alert("OTP sent to email");
+      document.getElementById("step-otp").style.display = "block";
+    } else {
+      alert("Email not found");
+    }
+  });
+}
+
+function verifyOTP() {
+  const otp = document.getElementById("otp").value;
+  if (!otp) return alert("Enter OTP");
+
+  savedOTP = otp;
+  document.getElementById("step-password").style.display = "block";
+}
+
+function resetPassword() {
+  const newPass = document.getElementById("newpass").value;
+  const confirmPass = document.getElementById("confirmpass").value;
+
+  if (!newPass || !confirmPass)
+    return alert("Fill both password fields");
+
+  if (newPass !== confirmPass)
+    return alert("Passwords do not match");
+
+  fetch("/api/admin/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: savedEmail,
+      otp: savedOTP,
+      newPassword: newPass
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Password reset successful");
+      location.href = "admin-login.html";
+    } else {
+      alert("Invalid OTP");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
