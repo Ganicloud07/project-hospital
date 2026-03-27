@@ -155,7 +155,7 @@ app.listen(3000, () => {
 /* ================= EMAIL CONFIG ================= */
 
 const EMAIL_USER = "ganicloud07@gmail.com";        // 🔴 CHANGE if needed
-const EMAIL_PASS = "iamcloudengineer";            // 🔴 GMAIL APP PASSWORD ONLY
+const EMAIL_PASS = "afahjwfnifooenf";            // 🔴 GMAIL APP PASSWORD ONLY
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
