@@ -274,12 +274,21 @@ app.post("/api/admin/reset-password", (req, res) => {
 
 
 // GET ALL APPOINTMENTS
+// app.get("/api/admin/appointments", (req, res) => {
+//   db.all("SELECT * FROM appointments ORDER BY id DESC", (err, rows) => {
+//     res.json(rows);
+//   });
+// });
 app.get("/api/admin/appointments", (req, res) => {
   db.all("SELECT * FROM appointments ORDER BY id DESC", (err, rows) => {
-    res.json(rows);
+    if (err) {
+      console.error("DB ERROR:", err.message);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+
+    res.json({ success: true, data: rows });
   });
 });
-
 
 
 // DELETE APPOINTMENT
